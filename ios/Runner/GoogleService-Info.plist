@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1002733685267-umc30bug6ljtucl9stuntftcl3v2hnlc.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1002733685267-umc30bug6ljtucl9stuntftcl3v2hnlc</string>
+	<key>API_KEY</key>
+	<string>AIzaSyARXDK3D7UCAEymxXv72yFPGv_7NHCEWRM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1002733685267</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.taegi.checkMate</string>
+	<key>PROJECT_ID</key>
+	<string>check-mate-745fc</string>
+	<key>STORAGE_BUCKET</key>
+	<string>check-mate-745fc.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1002733685267:ios:a0b9f25d53baee21960de6</string>
+	<key>DATABASE_URL</key>
+	<string>https://check-mate-745fc.firebaseio.com</string>
+</dict>
+</plist>
