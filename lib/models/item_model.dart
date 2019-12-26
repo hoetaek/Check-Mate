@@ -5,6 +5,7 @@ class ItemModel {
   int idx;
   int success;
   int level;
+  int updated;
 
   ItemModel({this.title, this.done});
   ItemModel.fromDb(Map itemData)
@@ -13,7 +14,8 @@ class ItemModel {
         this.done = itemData['done'] == 1,
         this.idx = itemData['idx'],
         this.success = itemData['success'],
-        this.level = itemData['level'];
+        this.level = itemData['level'],
+        this.updated = itemData['updated'];
 
   Map<String, dynamic> toMapForDb() {
     return <String, dynamic>{
@@ -23,6 +25,7 @@ class ItemModel {
       "idx": idx,
       "success": success,
       "level": level,
+      "updated": updated,
     };
   }
 

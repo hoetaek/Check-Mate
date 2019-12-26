@@ -13,8 +13,8 @@ class CheckMate extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(builder: (_) => TodoList()),
-          ChangeNotifierProvider(builder: (_) => UserRepository.instance()),
+          ChangeNotifierProvider(create: (_) => TodoList()),
+          ChangeNotifierProvider(create: (_) => UserRepository.instance()),
         ],
         child: MaterialApp(
             title: 'Check Mate',

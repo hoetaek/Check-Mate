@@ -16,7 +16,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   int _currentIndex = 0;
   UidExists uidExists;
   List<Widget> _children = [
-    CheckboxListView(),
+    MyTodoList(),
     FriendsListScreen(),
   ];
 

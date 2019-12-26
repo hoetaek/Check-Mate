@@ -13,7 +13,7 @@ class TodoDbProvider {
     final path = join(documentsDirectory.path, "items.db");
     db = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (Database newDb, int version) {
         newDb.execute("""
         CREATE TABLE Items
@@ -23,11 +23,21 @@ class TodoDbProvider {
         done INTEGER,
         idx INTEGER,
         success INTEGER,
-        level INTEGER
+        level INTEGER,
+        updated INTEGER DEFAULT 1
         )
         """);
       },
     );
+//
+//    Hive.init(documentsDirectory.path);
+//    var box = await Hive.openBox('To-do');
+//
+//    box.put('name', 'David');
+//
+//    var name = box.get('name');
+//
+//    print('Name: $name');
   }
 
   Future<List<ItemModel>> fetchItems() async {
@@ -47,8 +57,15 @@ class TodoDbProvider {
   }
 
   updateItem(ItemModel item) {
-    return db.update("Items", item.toMapForDb(),
-        where: "id = ?", whereArgs: [item.id]);
+    item.updated = 1;
+    Map<String, dynamic> itemMap = item.toMapForDb();
+    return db.update("Items", itemMap, where: "id = ?", whereArgs: [item.id]);
+  }
+
+  uploadItem(ItemModel item) {
+    item.updated = 0;
+    Map<String, dynamic> itemMap = item.toMapForDb();
+    return db.update("Items", itemMap, where: "id = ?", whereArgs: [item.id]);
   }
 
   deleteItem(ItemModel item) {

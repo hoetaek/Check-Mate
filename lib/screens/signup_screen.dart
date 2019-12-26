@@ -32,6 +32,9 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               Text('사용자 정보', style: Theme.of(context).textTheme.display1),
               SizedBox(height: 30),
+              //todo get user profile picture and upload it
+              //todo if nickname already exists error
+              //todo if white space in nickname error
               SimpleTextField(
                 suffixIcon: Icon(FontAwesomeIcons.user),
                 labelText: "사용자 닉네임",

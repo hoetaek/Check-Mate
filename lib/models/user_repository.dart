@@ -37,14 +37,14 @@ class UserRepository with ChangeNotifier {
     return userUids.contains(_user.uid) ? true : false;
   }
 
-  Future checkNickname(String nickname) async {
+  Future<bool> checkNickname(String nickname) async {
     List<String> userNicknames =
         await todoFirestoreProvider.getUsersNicknameData();
     return userNicknames.contains(nickname) ? true : false;
   }
 
-  Stream<QuerySnapshot> getNicknameSnapshot() {
-    return todoFirestoreProvider.getUsersNicknameSnapshot();
+  Stream<QuerySnapshot> getUsersSnapshot() {
+    return todoFirestoreProvider.getUsersSnapshot();
   }
 
   Status get status => _status;
@@ -96,7 +96,7 @@ class UserRepository with ChangeNotifier {
       // this is executed when logged in.
       _user = firebaseUser;
       // initialize firestore provider
-      todoFirestoreProvider = TodoFirestoreProvider(uid: _user.uid);
+      todoFirestoreProvider = TodoFirestoreProvider(myUid: _user.uid);
       todoFirestoreProvider.init();
       // check if uid exists.
       if (!(await checkUidExist())) {

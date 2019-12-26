@@ -14,7 +14,7 @@ class FriendsListScreen extends StatelessWidget {
           );
         } else {
           return StreamBuilder<QuerySnapshot>(
-              stream: user.getNicknameSnapshot(),
+              stream: user.getUsersSnapshot(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
@@ -29,7 +29,12 @@ class FriendsListScreen extends StatelessWidget {
                 return ListView.builder(
                   itemCount: usersDocuments.length,
                   itemBuilder: (context, idx) {
-                    return ListTile(title: Text(usersNickname[idx]));
+                    return ListTile(
+                      //todo image from firestore circle avatar
+//                      leading: Image.network(src),
+                      title: Text(usersNickname[idx]),
+                      trailing: Icon(Icons.arrow_forward_ios),
+                    );
                   },
                 );
               });

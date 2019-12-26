@@ -25,6 +25,7 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
     compileSdkVersion 28
 
     lintOptions {
@@ -39,6 +40,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
     buildTypes {
@@ -56,7 +58,7 @@ flutter {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.1.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.1.1'
 }
 apply plugin: 'com.google.gms.google-services'
