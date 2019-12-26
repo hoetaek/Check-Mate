@@ -1,14 +1,35 @@
+import 'dart:io';
+
 import 'package:check_mate/constants.dart';
+import 'package:check_mate/models/todo_item.dart';
 import 'package:check_mate/models/todo_list.dart';
 import 'package:check_mate/models/user_repository.dart';
 import 'package:check_mate/screens/todo_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(CheckMate());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Directory directory = await getApplicationDocumentsDirectory();
+  Hive.init(directory.path);
+  Hive.registerAdapter(TodoItemAdapter(), 0);
+  runApp(CheckMate());
+}
 
-class CheckMate extends StatelessWidget {
+class CheckMate extends StatefulWidget {
+  @override
+  _CheckMateState createState() => _CheckMateState();
+}
+
+class _CheckMateState extends State<CheckMate> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -30,10 +51,13 @@ class CheckMate extends StatelessWidget {
                 Theme.of(context).textTheme,
               ),
             ),
-            home: TodoListScreen()
-            //todo 차라리 처음부터 투두리스트 스크린 보여주고, 로그인 상태에 따라서 로그인/로그아웃 아이콘 표시
-            //todo 로그인 버튼을 누르면 로그인스크린을 push, 로그아웃 누르면 로그아웃 다이얼로그 표시
+            home: TodoListScreen()));
+  }
 
-            ));
+  @override
+  void dispose() {
+    Hive.box(Boxes.todoItemBox).compact();
+    Hive.close();
+    super.dispose();
   }
 }

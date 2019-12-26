@@ -1,5 +1,5 @@
 import 'package:check_mate/constants.dart';
-import 'package:check_mate/models/item_model.dart';
+import 'package:check_mate/models/todo_item.dart';
 import 'package:check_mate/models/todo_list.dart';
 import 'package:check_mate/widgets/reorderable_slidable_list_view.dart';
 import 'package:check_mate/widgets/todo_checkbox_tile.dart';
@@ -44,17 +44,13 @@ class TodoListView extends StatelessWidget {
           FontAwesomeIcons.bars,
           color: kMainColor,
         ),
-        children: todoList.itemList
-            .map((ItemModel todoItem) => TodoCheckboxTile(
-                  idx: todoList.itemList.indexOf(todoItem),
-                  key: UniqueKey(),
-                ))
-            .toList(),
+        children: todoList.itemList.map((TodoItem todoItem) {
+          return TodoCheckboxTile(
+            idx: todoList.itemList.indexOf(todoItem),
+          );
+        }).toList(),
         onReorder: (oldIdx, newIdx) {
           todoList.reorder(oldIdx, newIdx);
-          print(todoList.itemList.map((x) => x.title).toList());
-          print(todoList.itemList.map((x) => x.done).toList());
-          print(todoList.itemList.map((x) => x.idx).toList());
         },
       );
     });

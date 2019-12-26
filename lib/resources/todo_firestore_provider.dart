@@ -51,11 +51,6 @@ class TodoFirestoreProvider {
   }
 }
 
-//  getFriendTodoCollection(String friendUid) {
-//    friendCollection = Firestore.instance.collection(friendUid);
-//    return friendCollection.document('todo').collection('todo');
-//  }
-
 class Collection {
   final String collectionName;
   CollectionReference collectionReference;

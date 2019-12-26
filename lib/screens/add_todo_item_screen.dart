@@ -1,4 +1,4 @@
-import 'package:check_mate/models/item_model.dart';
+import 'package:check_mate/models/todo_item.dart';
 import 'package:check_mate/models/todo_list.dart';
 import 'package:check_mate/widgets/check_mate_logo_app_bar.dart';
 import 'package:check_mate/widgets/simple_button.dart';
@@ -40,8 +40,12 @@ class AddTodoItemScreen extends StatelessWidget {
                   color: Colors.lightBlueAccent,
                   onPressed: () {
                     if (textController.text != '') {
-                      Provider.of<TodoList>(context).addItem(
-                          ItemModel(title: textController.text, done: false));
+                      TodoItem todoItem = TodoItem(
+                          title: textController.text,
+                          done: false,
+                          idx: Provider.of<TodoList>(context).itemList.length);
+
+                      Provider.of<TodoList>(context).addItem(todoItem);
                     }
                     Navigator.pop(context);
                   },

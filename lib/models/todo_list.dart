@@ -1,35 +1,52 @@
-import 'package:check_mate/models/item_model.dart';
-import 'package:check_mate/resources/todo_db_provider.dart';
+import 'package:check_mate/constants.dart';
+import 'package:check_mate/models/todo_item.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class TodoList extends ChangeNotifier {
-  //TODO 여기에 firebase current user 확인하는 기능 추가
-  List<ItemModel> itemList = [];
-  TodoDbProvider todoDbProvider = TodoDbProvider();
+  List<TodoItem> itemList = [];
+  Box todoItemBox;
+
   TodoList() {
     init();
   }
+
   void init() async {
-    await todoDbProvider.init();
-    List<ItemModel> todoDbData = await todoDbProvider.fetchItems();
-    if (todoDbData != null) {
-      itemList.addAll(todoDbData);
-    }
+    await Hive.openBox(Boxes.todoItemBox,
+        compactionStrategy: (int total, int deleted) {
+      return deleted > 20;
+    });
+    todoItemBox = Hive.box(Boxes.todoItemBox);
+    List todoItemList = todoItemBox.values.toList();
+    todoItemList.forEach((item) {
+      TodoItem todoItem = item;
+      itemList.add(todoItem);
+    });
+    itemList.sort((a, b) => a.idx.compareTo(b.idx));
+    todoItemBox.watch().listen((event) {
+      if (event.deleted) {
+        //firestore delete
+        print('${event.key} is now deleted');
+      } else {
+        // set key item's value to event.value
+        print('${event.key} is now assigned to ${event.value}');
+      }
+    });
   }
 
   void reorder(oldIdx, newIdx) {
-    ItemModel selected = itemList.removeAt(oldIdx);
+    TodoItem selected = itemList.removeAt(oldIdx);
     itemList.insert(newIdx, selected);
     int idx = 0;
-    itemList.forEach((ItemModel todoItem) {
+    itemList.forEach((TodoItem todoItem) {
       todoItem.setIdx(idx);
-      todoDbProvider.updateItem(todoItem);
+      todoItem.save();
       idx += 1;
     });
     notifyListeners();
   }
 
-  ItemModel getItem(int idx) {
+  TodoItem getItem(int idx) {
     return itemList[idx];
   }
 
@@ -42,15 +59,14 @@ class TodoList extends ChangeNotifier {
   }
 
   void toggleDone(int idx) {
-    ItemModel item = itemList[idx];
+    TodoItem item = itemList[idx];
     item.done = !item.done;
-    todoDbProvider.updateItem(item);
+    item.save();
     notifyListeners();
   }
 
-  void addItem(ItemModel todoItem) async {
-    int itemId = await todoDbProvider.addItem(todoItem);
-    todoItem.setId(itemId);
+  void addItem(TodoItem todoItem) async {
+    await todoItemBox.add(todoItem);
     todoItem.setIdx(itemList.length);
     todoItem.success = 0;
     todoItem.level = 1;
@@ -59,14 +75,15 @@ class TodoList extends ChangeNotifier {
   }
 
   void updateItem(int idx, String title) {
-    ItemModel item = itemList[idx];
+    TodoItem item = itemList[idx];
     item.title = title;
-    todoDbProvider.updateItem(item);
+    item.save();
     notifyListeners();
   }
 
   void removeItem(int idx) {
-    todoDbProvider.deleteItem(itemList[idx]);
+    TodoItem item = itemList[idx];
+    item.delete();
     itemList.removeAt(idx);
     notifyListeners();
   }

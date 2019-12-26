@@ -31,7 +31,9 @@ class CheckTileSlidable extends StatelessWidget {
           caption: 'Delete',
           color: Colors.red,
           icon: Icons.delete,
-          onTap: () => Provider.of<TodoList>(context).removeItem(idx),
+          onTap: () {
+            Provider.of<TodoList>(context).removeItem(idx);
+          },
         ),
       ],
       dismissal: SlidableDismissal(

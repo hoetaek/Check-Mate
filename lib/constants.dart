@@ -30,3 +30,7 @@ const kEmphasisMainColor = Color(0xFF7B1FA2);
 const kLightMainColor = Color.fromRGBO(246, 241, 248, 1);
 const kTilePadding = 7.0;
 const kTitleTilePadding = 5.0;
+
+class Boxes {
+  static String todoItemBox = 'todo_item';
+}

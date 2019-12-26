@@ -16,8 +16,9 @@ class TodoAddButton extends StatelessWidget {
         child: FloatingActionButton(
           child: Icon(FontAwesomeIcons.plus),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AddTodoItemScreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return AddTodoItemScreen();
+            }));
           },
           backgroundColor: kMainColor,
         ),
