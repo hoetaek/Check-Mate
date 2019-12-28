@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class SimpleCard extends StatelessWidget {
@@ -8,22 +6,35 @@ class SimpleCard extends StatelessWidget {
   final Color color;
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    final cardWidth = min(deviceSize.width * 0.75, 360.0);
     const cardPadding = 16.0;
     return Card(
       color: color,
       child: Container(
           padding: EdgeInsets.only(
-            left: cardPadding,
-            top: cardPadding + 10.0,
-            right: cardPadding,
+            left: cardPadding - 7,
+            top: cardPadding,
+            right: cardPadding - 7,
             bottom: cardPadding,
           ),
-          width: cardWidth,
           alignment: Alignment.center,
           child: Column(
-            children: children,
+            children: children.length <= 8
+                ? <Widget>[
+                    Row(
+                      children: children,
+                    )
+                  ]
+                : <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: children.sublist(0, 9),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: children.sublist(9, 18),
+                    ),
+                  ],
           )),
     );
   }

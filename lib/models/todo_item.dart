@@ -14,10 +14,26 @@ class TodoItem extends HiveObject {
   int success;
   @HiveField(4)
   int level;
+  @HiveField(5)
+  List<DateTime> records;
+  @HiveField(6)
+  int colorIndex;
 
-  TodoItem({this.title, this.done, this.idx});
+  TodoItem({this.title, this.done, this.idx, this.colorIndex}) {
+    success = 0;
+    level = 1;
+    records = [];
+  }
+
+  void updateLevel() {
+    level = level + 1;
+  }
 
   void setIdx(int itemIdx) {
     idx = itemIdx;
+  }
+
+  void toggleDone() {
+    done = !done;
   }
 }

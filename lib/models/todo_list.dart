@@ -1,21 +1,24 @@
 import 'package:check_mate/constants.dart';
+import 'package:check_mate/models/record.dart';
+import 'package:check_mate/models/record_list.dart';
 import 'package:check_mate/models/todo_item.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-class TodoList extends ChangeNotifier {
+class TodoList with ChangeNotifier {
   List<TodoItem> itemList = [];
   Box todoItemBox;
+  RecordList recordList;
+  List<Record> dateRecordsList;
 
   TodoList() {
     init();
   }
 
   void init() async {
-    await Hive.openBox(Boxes.todoItemBox,
-        compactionStrategy: (int total, int deleted) {
-      return deleted > 20;
-    });
+    //todoItemBox initialize
+//    await Hive.openBox(Boxes.todoItemBox,
+//        );
     todoItemBox = Hive.box(Boxes.todoItemBox);
     List todoItemList = todoItemBox.values.toList();
     todoItemList.forEach((item) {
@@ -23,15 +26,19 @@ class TodoList extends ChangeNotifier {
       itemList.add(todoItem);
     });
     itemList.sort((a, b) => a.idx.compareTo(b.idx));
+
     todoItemBox.watch().listen((event) {
       if (event.deleted) {
         //firestore delete
         print('${event.key} is now deleted');
       } else {
         // set key item's value to event.value
-        print('${event.key} is now assigned to ${event.value}');
+        print('${event.key} is now assigned to ');
       }
+      notifyListeners();
     });
+    recordList = RecordList(itemList: itemList);
+    dateRecordsList = recordList.dateRecordsList;
   }
 
   void reorder(oldIdx, newIdx) {
@@ -58,6 +65,10 @@ class TodoList extends ChangeNotifier {
     return itemList[idx].done;
   }
 
+  int getColorIndex(int idx) {
+    return itemList[idx].colorIndex;
+  }
+
   void toggleDone(int idx) {
     TodoItem item = itemList[idx];
     item.done = !item.done;
@@ -67,16 +78,14 @@ class TodoList extends ChangeNotifier {
 
   void addItem(TodoItem todoItem) async {
     await todoItemBox.add(todoItem);
-    todoItem.setIdx(itemList.length);
-    todoItem.success = 0;
-    todoItem.level = 1;
     itemList.add(todoItem);
     notifyListeners();
   }
 
-  void updateItem(int idx, String title) {
+  void updateItem(int idx, String title, int colorIndex) {
     TodoItem item = itemList[idx];
     item.title = title;
+    item.colorIndex = colorIndex;
     item.save();
     notifyListeners();
   }

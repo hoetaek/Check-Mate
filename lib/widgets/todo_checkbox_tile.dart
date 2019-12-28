@@ -26,9 +26,9 @@ class TodoCheckboxTile extends StatelessWidget {
             .merge(GoogleFonts.notoSans()),
       ),
       subtitle: Text(
-        'Lv.1',
+        'Lv.${todoItem.level}',
         style: TextStyle(
-            color: Colors.accents[1],
+            color: kColors[todoItem.colorIndex],
             fontWeight: FontWeight.bold,
             fontSize: 16.0),
       ),

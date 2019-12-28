@@ -1,6 +1,7 @@
 import 'package:check_mate/constants.dart';
 import 'package:check_mate/models/todo_item.dart';
 import 'package:check_mate/models/todo_list.dart';
+import 'package:check_mate/widgets/calendar_carousel.dart';
 import 'package:check_mate/widgets/reorderable_slidable_list_view.dart';
 import 'package:check_mate/widgets/todo_checkbox_tile.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +26,8 @@ class MyTodoList extends StatelessWidget {
 class Calendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text('달력에 모든 항목들의 완료 여부 표시'),
-      ),
+    return Scaffold(
+      body: CheckedCalendar(),
     );
   }
 }

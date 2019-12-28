@@ -28,10 +28,8 @@ class CheckMateIconAppBar extends StatelessWidget
                   tag: 'title',
                   child: Text(
                     'Check Mate',
-                    style: Theme.of(context)
-                        .textTheme
-                        .display2
-                        .copyWith(color: kEmphasisMainColor),
+                    style: Theme.of(context).textTheme.display2.copyWith(
+                        color: kEmphasisMainColor, fontWeight: FontWeight.bold),
                   )),
             ),
             SignIconButton()
@@ -63,7 +61,8 @@ class SignIconButton extends StatelessWidget {
             if (!Provider.of<UserRepository>(context).loggedIn) {
               await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => LoginScreen()));
-              Provider.of<UserRepository>(context).setStateAuthenticated();
+              if (Provider.of<UserRepository>(context).user != null)
+                Provider.of<UserRepository>(context).setStateAuthenticated();
             } else {
               Provider.of<UserRepository>(context).signOut();
             }

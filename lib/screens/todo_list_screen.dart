@@ -21,6 +21,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, UserRepository user, _) {

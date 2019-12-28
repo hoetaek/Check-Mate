@@ -25,10 +25,8 @@ class CheckMateLogoAppBar extends StatelessWidget
               tag: 'title',
               child: Text(
                 'Check Mate',
-                style: Theme.of(context)
-                    .textTheme
-                    .display2
-                    .copyWith(color: kEmphasisMainColor),
+                style: Theme.of(context).textTheme.display2.copyWith(
+                    color: kEmphasisMainColor, fontWeight: FontWeight.bold),
               )),
           Flexible(
             child: Container(
