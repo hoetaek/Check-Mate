@@ -46,7 +46,6 @@ class TodoFirestoreProvider {
 
   Future<String> getUserNickname({String uid}) async {
     UserModel userModel = await getUserData(uid: uid);
-    //todo if actually getting user nickname works
     if (userModel != null) {
       return userModel.nickname;
     } else

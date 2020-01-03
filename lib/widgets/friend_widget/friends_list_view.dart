@@ -38,7 +38,6 @@ class FriendsListView extends StatelessWidget {
                     level: doc['level'],
                   );
                 }).toList();
-                // todo sort compare
 //                userModelList.sort();
                 return ListView.builder(
                   physics: ScrollPhysics(),
