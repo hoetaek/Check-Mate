@@ -5,49 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-class CheckMateIconAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: kMainColor,
-      child: SafeArea(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Hero(
-              tag: 'logo',
-              child: Image.asset(
-                'assets/check_logo.png',
-                width: 50,
-              ),
-            ),
-            Center(
-              child: Hero(
-                  tag: 'title',
-                  child: Text(
-                    'Check Mate',
-                    style: Theme.of(context).textTheme.display2.copyWith(
-                        color: kEmphasisMainColor, fontWeight: FontWeight.bold),
-                  )),
-            ),
-            SignIconButton()
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize => Size.fromHeight(80);
-}
-
 class SignIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         IconButton(
           icon: Icon(
@@ -66,13 +28,14 @@ class SignIconButton extends StatelessWidget {
             } else {
               Provider.of<UserRepository>(context).signOut();
             }
+            Navigator.pop(context);
           },
         ),
         Text(
           Provider.of<UserRepository>(context).status == Status.Authenticated
               ? "Sign out"
               : "Sign in",
-          style: Theme.of(context).textTheme.button,
+          style: kTileSubtitle.copyWith(fontWeight: FontWeight.normal),
         ),
       ],
     );

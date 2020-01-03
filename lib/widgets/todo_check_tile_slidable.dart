@@ -1,4 +1,5 @@
 import 'package:check_mate/models/todo_list.dart';
+import 'package:check_mate/screens/todo_item_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
@@ -8,10 +9,6 @@ class CheckTileSlidable extends StatelessWidget {
   final Key key;
   final Widget child;
   CheckTileSlidable({this.idx, this.key, this.child});
-
-  _showSnackBar(text) {
-    print(text);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +22,10 @@ class CheckTileSlidable extends StatelessWidget {
           caption: 'More',
           color: Colors.black45,
           icon: Icons.more_horiz,
-          onTap: () => _showSnackBar('More'),
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TodoItemDetailPage(idx: idx))),
         ),
         IconSlideAction(
           caption: 'Delete',

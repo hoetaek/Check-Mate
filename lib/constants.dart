@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const kTextFieldDecoration = InputDecoration(
   filled: true,
@@ -15,6 +16,8 @@ const kTextFieldDecoration = InputDecoration(
     borderSide: BorderSide(color: kMainColor),
   ),
 );
+const kButtonShapeStyle = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(10.0)));
 
 const kButtonTextStyle = TextStyle(
   color: Colors.white,
@@ -22,20 +25,37 @@ const kButtonTextStyle = TextStyle(
   fontWeight: FontWeight.w700,
 );
 
-const kButtonShapeStyle = RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(10.0)));
+const normalTextSize = 18.0;
 
-const kMainColor = Color(0xFFCE93D8);
-const kEmphasisMainColor = Color(0xFF7B1FA2);
-const kLightMainColor = Color.fromRGBO(246, 241, 248, 1);
+const kTextHeading = TextStyle(color: kEmphasisMainColor, fontSize: 20);
+const kEmphasisTextStyle = TextStyle(
+  fontSize: normalTextSize,
+  color: kEmphasisMainColor,
+  fontWeight: FontWeight.bold,
+);
+const kNormalTextStyle = TextStyle(fontSize: normalTextSize);
+const kTileSubtitle = TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0);
+
+class GoogleTextStyle {
+  static TextStyle tileTitleTextStyle = TextStyle(
+    fontSize: normalTextSize,
+    fontWeight: FontWeight.w500,
+  ).merge(GoogleFonts.notoSans());
+}
+
 const kTilePadding = 7.0;
 const kTitleTilePadding = 5.0;
 
 class Boxes {
   static String todoItemBox = 'todo_item';
   static String recordsBox = 'record';
+  static String cacheBox = 'cache';
+  static String userBox = 'user';
 }
 
+const kMainColor = Color(0xFFCE93D8);
+const kEmphasisMainColor = Color(0xFF7B1FA2);
+const kLightMainColor = Color.fromRGBO(246, 241, 248, 1);
 final List<Color> kColors = <Color>[
   Color(0xFFF44336),
   Color(0xFFE91E63),
@@ -56,3 +76,5 @@ final List<Color> kColors = <Color>[
   Color(0xFF795548),
   Color(0xFF607D8B),
 ];
+
+const kCheckLogoAsset = "assets/check_logo.png";

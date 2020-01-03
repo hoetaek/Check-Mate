@@ -5,7 +5,7 @@ class SimpleButton extends StatelessWidget {
   SimpleButton({this.onPressed, this.color, this.title});
   final Function onPressed;
   final Color color;
-  final String title;
+  final Widget title;
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +14,12 @@ class SimpleButton extends StatelessWidget {
     return MaterialButton(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 30),
-        child: Text(
-          title == null ? '확인' : title,
-          style: theme.textTheme.button
-              .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
+        child: title ??
+            Text(
+              '확인',
+              style: theme.textTheme.button
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+            ),
       ),
       onPressed: onPressed,
       color: color == null ? color : kMainColor,

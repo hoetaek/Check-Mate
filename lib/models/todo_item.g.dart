@@ -18,6 +18,7 @@ class TodoItemAdapter extends TypeAdapter<TodoItem> {
       done: fields[1] as bool,
       idx: fields[2] as int,
       colorIndex: fields[6] as int,
+      timestamp: fields[7] as DateTime,
     )
       ..success = fields[3] as int
       ..level = fields[4] as int
@@ -27,7 +28,7 @@ class TodoItemAdapter extends TypeAdapter<TodoItem> {
   @override
   void write(BinaryWriter writer, TodoItem obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -41,6 +42,8 @@ class TodoItemAdapter extends TypeAdapter<TodoItem> {
       ..writeByte(5)
       ..write(obj.records)
       ..writeByte(6)
-      ..write(obj.colorIndex);
+      ..write(obj.colorIndex)
+      ..writeByte(7)
+      ..write(obj.timestamp);
   }
 }

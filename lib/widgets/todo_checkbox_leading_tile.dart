@@ -9,7 +9,9 @@ class CheckboxLeadingTile extends StatelessWidget {
       this.value,
       this.onChanged,
       this.activeColor,
-      this.idx});
+      this.idx,
+      this.key})
+      : super(key: key);
 
   final Text title;
   final Text subtitle;
@@ -17,6 +19,7 @@ class CheckboxLeadingTile extends StatelessWidget {
   final Function onChanged;
   final Color activeColor;
   final int idx;
+  final Key key;
 
   @override
   Widget build(BuildContext context) {

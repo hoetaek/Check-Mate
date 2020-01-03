@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class TodoList with ChangeNotifier {
-  List<TodoItem> itemList = [];
+  static List<TodoItem> itemList = [];
   Box todoItemBox;
   RecordList recordList;
   List<Record> dateRecordsList;

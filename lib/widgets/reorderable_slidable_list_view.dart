@@ -1,8 +1,9 @@
 import 'package:check_mate/constants.dart';
-import 'package:check_mate/widgets/check_tile_slidable.dart';
 import 'package:check_mate/widgets/todo_add_button.dart';
+import 'package:check_mate/widgets/todo_check_tile_slidable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
+import 'package:hive/hive.dart';
 
 enum ReorderableListSimpleSide { Right, Left }
 
@@ -34,6 +35,7 @@ class _ReorderableSlidableListViewState
     extends State<ReorderableSlidableListView> {
   int _newIndex;
   List<Widget> _children;
+  Box userBox = Hive.box(Boxes.userBox);
 
   @override
   void initState() {
@@ -77,20 +79,15 @@ class _ReorderableSlidableListViewState
 
   @override
   Widget build(BuildContext context) {
-    double bodyHeight = MediaQuery.of(context).size.height -
-        Scaffold.of(context).appBarMaxHeight -
-        kBottomNavigationBarHeight -
-        kTilePadding * 2 -
-        kTitleTilePadding -
-        MediaQuery.of(context).padding.bottom -
-        10;
+    double bodyHeight =
+        userBox.get('maxHeight') - Scaffold.of(context).appBarMaxHeight;
     return ReorderableList(
       child: ListView(
-        physics: ScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         children: <Widget>[
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: bodyHeight - 70),
+            constraints: BoxConstraints(maxHeight: bodyHeight - 84),
             child: ListView.builder(
               physics: ScrollPhysics(),
               shrinkWrap: true,

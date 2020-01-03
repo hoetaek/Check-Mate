@@ -39,7 +39,8 @@ class RecordList {
       }
     });
     if (recordsBox.isNotEmpty) {
-      lastRecord = recordsBox.getAt(recordsBox.length - 1);
+      lastRecord = dateRecordsList[dateRecordsList.length - 1];
+      print(lastRecord.date);
       if (!lastRecord.done &&
           (getDay(lastRecord.date) != getDay(CheckOffDaily.setDate))) {
         print("it should initialize");
@@ -59,8 +60,7 @@ class RecordList {
         print("${todoItem.title} was done");
         todoItem.toggleDone();
         todoItem.updateLevel();
-        todoItem.records
-            .add(getDay(CheckOffDaily.setDate.subtract(Duration(days: 1))));
+        todoItem.records.add(lastRecord.date.subtract(Duration(days: 1)));
         // add todoItem to the record so that it can shown on the calendar
         lastRecord.todoItems.add(todoItem);
         todoItem.save();

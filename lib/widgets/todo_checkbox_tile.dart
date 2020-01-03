@@ -1,36 +1,29 @@
 import 'package:check_mate/constants.dart';
 import 'package:check_mate/models/todo_item.dart';
 import 'package:check_mate/models/todo_list.dart';
-import 'package:check_mate/widgets/checkbox_leading_tile.dart';
+import 'package:check_mate/widgets/todo_checkbox_leading_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class TodoCheckboxTile extends StatelessWidget {
-  final int idx;
-  final Key key;
+  final dynamic idx;
+  final Key tileKey = UniqueKey();
 
-  TodoCheckboxTile({this.idx, this.key});
+  TodoCheckboxTile({this.idx});
   @override
   Widget build(BuildContext context) {
     TodoItem todoItem = Provider.of<TodoList>(context).getItem(idx);
     return CheckboxLeadingTile(
-      //todo colored water fills up as animation
       idx: idx,
+      key: tileKey,
       title: Text(
         todoItem.title,
-        style: TextStyle(
-                fontSize: 22.0,
-                fontWeight: FontWeight.w500,
-                decoration: todoItem.done ? TextDecoration.lineThrough : null)
-            .merge(GoogleFonts.notoSans()),
+        style: GoogleTextStyle.tileTitleTextStyle.copyWith(
+            decoration: todoItem.done ? TextDecoration.lineThrough : null),
       ),
       subtitle: Text(
-        'Lv.${todoItem.level}',
-        style: TextStyle(
-            color: kColors[todoItem.colorIndex],
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0),
+        'Lv.${todoItem.level + (todoItem.done ? 1 : 0)}',
+        style: kTileSubtitle.copyWith(color: kColors[todoItem.colorIndex]),
       ),
       value: todoItem.done, //todoList.getDone(idx),
       onChanged: (value) {

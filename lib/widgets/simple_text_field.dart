@@ -8,19 +8,25 @@ class SimpleTextField extends StatelessWidget {
       this.labelText,
       this.errorText,
       this.suffixIcon,
-      this.color});
+      this.color,
+      this.formKey,
+      this.validator});
 
   final TextEditingController controller;
   final String labelText;
   final String errorText;
   final Icon suffixIcon;
   final Color color;
+  final Key formKey;
+  final Function validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: formKey,
       style: GoogleFonts.notoSans(),
       controller: controller,
+      validator: validator,
       decoration: kTextFieldDecoration.copyWith(
         errorText: errorText,
         fillColor: color,

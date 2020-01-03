@@ -1,3 +1,4 @@
+import 'package:check_mate/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -9,9 +10,11 @@ class TodoFirestoreProvider {
   init() {
     usersCollection = Collection(collectionName: "Users");
     usersCollection.init();
+    Firestore.instance.settings(persistenceEnabled: true);
   }
 
-  addUsersData(Map<String, dynamic> userData) {
+  addUsersData(UserModel userModel) {
+    Map<String, dynamic> userData = userModel.toMap();
     usersCollection.addDocument(documentData: userData);
   }
 
@@ -32,6 +35,43 @@ class TodoFirestoreProvider {
   Future<QuerySnapshot> get getUsersDocuments async =>
       await usersCollection.getCollection.getDocuments();
 
+  Future<UserModel> getUserData({String uid}) async {
+    DocumentSnapshot usersData =
+        await usersCollection.getCollection.document(uid).get();
+    if (usersData.data != null)
+      return UserModel.parseMap(usersData.data);
+    else
+      return null;
+  }
+
+  Future<String> getUserNickname({String uid}) async {
+    UserModel userModel = await getUserData(uid: uid);
+    //todo if actually getting user nickname works
+    if (userModel != null) {
+      return userModel.nickname;
+    } else
+      return null;
+  }
+
+  addUserTodoList({uid, key, Map<String, dynamic> userTodoItem}) {
+    CollectionReference userTodoListCollection =
+        getUserTodoListCollection(uid: uid);
+    userTodoListCollection.document(key.toString()).setData(userTodoItem);
+  }
+
+  deleteUserTodoList({uid, key}) {
+    CollectionReference userTodoListCollection =
+        getUserTodoListCollection(uid: uid);
+    userTodoListCollection.document(key.toString()).delete();
+  }
+
+  Stream<QuerySnapshot> getUserTodoSnapshot({String uid}) {
+    print(uid);
+    CollectionReference userTodoListCollection =
+        getUserTodoListCollection(uid: uid);
+    return userTodoListCollection.snapshots();
+  }
+
   ///inner info. the friends and to-do lists of the users
   CollectionReference getUserTodoListCollection({String uid}) {
     if (uid == null) {
@@ -44,9 +84,9 @@ class TodoFirestoreProvider {
   ///do i have to put friends list on firestore?
   CollectionReference getUserFriendsCollection({String uid}) {
     if (uid == null) {
-      return usersCollection.innerInit(myUid).collection('TodoList');
+      return usersCollection.innerInit(myUid).collection('Friends');
     } else {
-      return usersCollection.innerInit(uid).collection('TodoList');
+      return usersCollection.innerInit(uid).collection('Friends');
     }
   }
 }
@@ -54,7 +94,7 @@ class TodoFirestoreProvider {
 class Collection {
   final String collectionName;
   CollectionReference collectionReference;
-  DocumentReference innerCollectionReference;
+  DocumentReference innerDocumentReference;
 
   Collection({@required this.collectionName});
   init() {
@@ -64,16 +104,13 @@ class Collection {
   CollectionReference get getCollection => collectionReference;
 
   DocumentReference innerInit(String innerDocumentName) {
-    innerCollectionReference = collectionReference.document(innerDocumentName);
+    innerDocumentReference = collectionReference.document(innerDocumentName);
+    return innerDocumentReference;
   }
 
-  DocumentReference get getInnerDocument => innerCollectionReference;
+  DocumentReference get getInnerDocument => innerDocumentReference;
 
-  Future addDocument({Map<String, dynamic> documentData}) async {
-    return await collectionReference.document().setData(documentData);
+  addDocument({Map<String, dynamic> documentData}) {
+    collectionReference.document(documentData['uid']).setData(documentData);
   }
-
-//  addInnerDocument({Map documentData}) {
-//    innerCollectionReference.add(documentData);
-//  }
 }

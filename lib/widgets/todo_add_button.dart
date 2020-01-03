@@ -14,6 +14,7 @@ class TodoAddButton extends StatelessWidget {
       height: size,
       child: FittedBox(
         child: FloatingActionButton(
+          elevation: 0.0,
           child: Icon(FontAwesomeIcons.plus),
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {

@@ -24,6 +24,7 @@ class ColorPickerState extends State<ColorPicker> {
   @override
   Widget build(BuildContext context) {
     return SimpleCard(
+        color: Color.fromRGBO(234, 213, 242, 0.4),
         children: colorsRange
             .map((i) => GestureDetector(
                   child: Container(
@@ -33,7 +34,6 @@ class ColorPickerState extends State<ColorPicker> {
                       color: kColors[i],
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
-//          border: Border.all(width: 2, color: Colors.white),
                     ),
                     child: _index == i
                         ? Icon(
