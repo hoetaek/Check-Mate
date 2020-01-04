@@ -65,7 +65,6 @@ class TodoFirestoreProvider {
   }
 
   Stream<QuerySnapshot> getUserTodoSnapshot({String uid}) {
-    print(uid);
     CollectionReference userTodoListCollection =
         getUserTodoListCollection(uid: uid);
     return userTodoListCollection.snapshots();

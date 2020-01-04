@@ -32,7 +32,7 @@ class SignIconButton extends StatelessWidget {
           },
         ),
         Text(
-          Provider.of<UserRepository>(context).status == Status.Authenticated
+          Provider.of<UserRepository>(context).loggedIn
               ? "Sign out"
               : "Sign in",
           style: kTileSubtitle.copyWith(fontWeight: FontWeight.normal),

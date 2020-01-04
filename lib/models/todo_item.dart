@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 
 part 'todo_item.g.dart';
@@ -20,14 +21,53 @@ class TodoItem extends HiveObject {
   int colorIndex;
   @HiveField(7)
   DateTime timestamp;
+  @HiveField(8)
+  DateTime created;
+  @HiveField(9)
+  bool share;
   int plusLvNum = 0;
   double strength;
-  int row;
 
-  TodoItem({this.title, this.done, this.idx, this.colorIndex, this.timestamp}) {
-    success = 0;
+  TodoItem(
+      {this.title,
+      this.done,
+      this.idx,
+      this.colorIndex,
+      this.timestamp,
+      this.created,
+      this.share}) {
     level = 1;
     records = [];
+  }
+
+  TodoItem.fromDoc(DocumentSnapshot doc, int index) {
+    title = doc["title"];
+    done = doc["done"];
+    level = doc["level"];
+    colorIndex = doc["colorIndex"];
+    idx = index;
+    timestamp =
+        DateTime.fromMillisecondsSinceEpoch(doc["timestamp"], isUtc: true);
+    records = List<DateTime>.from(doc["records"].map((record) {
+      return DateTime.fromMillisecondsSinceEpoch(record, isUtc: true);
+    }));
+    created = DateTime.fromMillisecondsSinceEpoch(doc["created"], isUtc: true);
+    share = doc["share"];
+  }
+
+  void update(DocumentSnapshot doc) {
+    title = doc["title"];
+    done = doc["done"];
+    level = doc["level"];
+    colorIndex = doc["colorIndex"];
+    idx = doc["idx"];
+    timestamp =
+        DateTime.fromMillisecondsSinceEpoch(doc["timestamp"], isUtc: true);
+    records = List<DateTime>.from(doc["records"].map((record) {
+      return DateTime.fromMillisecondsSinceEpoch(record, isUtc: true);
+    }));
+    created = DateTime.fromMillisecondsSinceEpoch(doc["created"], isUtc: true);
+    share = doc["share"];
   }
 
   Map<String, dynamic> toMapForFirestore() {
@@ -36,6 +76,13 @@ class TodoItem extends HiveObject {
       "done": done,
       "level": level,
       "colorIndex": colorIndex,
+      "idx": idx,
+      "timestamp": timestamp.toUtc().millisecondsSinceEpoch,
+      "records": records
+          .map((record) => record.toUtc().millisecondsSinceEpoch)
+          .toList(),
+      "created": created.toUtc().millisecondsSinceEpoch,
+      "share": share,
     };
   }
 

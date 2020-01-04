@@ -77,7 +77,7 @@ class TodoItemDetailPage extends StatelessWidget {
                           DataRow(
                             cells: [
                               DataCell(Text(
-                                '${DateTime.now().difference(todoItem.timestamp).inDays + 1}',
+                                '${DateTime.now().difference(todoItem.created).inDays + 1}',
                                 style: kTileSubtitle,
                               )),
                               DataCell(Text(

@@ -1,5 +1,6 @@
 import 'package:check_mate/constants.dart';
 import 'package:check_mate/models/todo_list.dart';
+import 'package:check_mate/screens/add_todo_item_screen.dart';
 import 'package:check_mate/widgets/app_bar/check_mate_logo_app_bar.dart';
 import 'package:check_mate/widgets/color_picker.dart';
 import 'package:check_mate/widgets/simple_button.dart';
@@ -8,11 +9,26 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-class EditTodoItemScreen extends StatelessWidget {
+class EditTodoItemScreen extends StatefulWidget {
   final int idx;
   EditTodoItemScreen({@required this.idx});
+
+  @override
+  _EditTodoItemScreenState createState() => _EditTodoItemScreenState();
+}
+
+class _EditTodoItemScreenState extends State<EditTodoItemScreen> {
   final TextEditingController textController = TextEditingController();
-  final GlobalKey<ColorPickerState> colorKey = GlobalKey<ColorPickerState>();
+
+  int colorIndex;
+  bool isShareOn;
+
+  @override
+  void initState() {
+    colorIndex = TodoList.itemList[widget.idx].colorIndex;
+    isShareOn = TodoList.itemList[widget.idx].share;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,30 +51,47 @@ class EditTodoItemScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 30.0),
                 SimpleTextField(
-                  labelText: Provider.of<TodoList>(context).getTitle(idx),
+                  labelText:
+                      Provider.of<TodoList>(context).getTitle(widget.idx),
                   color: Color.fromRGBO(234, 213, 242, 0.4),
                   suffixIcon: Icon(FontAwesomeIcons.brush),
                   controller: textController,
                 ),
                 SizedBox(height: 12.0),
                 ColorPicker(
-                  key: colorKey,
-                  initialIndex:
-                      Provider.of<TodoList>(context).getColorIndex(idx),
+                  index: colorIndex,
+                  onChange: (id) {
+                    setState(() {
+                      colorIndex = id;
+                    });
+                  },
+                ),
+                SizedBox(height: 12.0),
+                SwitchCard(
+                  isShareOn: isShareOn,
+                  onChange: (value) {
+                    setState(() {
+                      isShareOn = value;
+                    });
+                  },
                 ),
                 SizedBox(height: 12.0),
                 Center(
                   child: SimpleButton(
                     onPressed: () {
                       if (textController.text != '' ||
-                          Provider.of<TodoList>(context).getColorIndex(idx) !=
-                              colorKey.currentState.colorIndex) {
+                          Provider.of<TodoList>(context)
+                                  .getColorIndex(widget.idx) !=
+                              colorIndex ||
+                          TodoList.itemList[widget.idx].share != isShareOn) {
                         Provider.of<TodoList>(context).updateItem(
-                            idx,
+                            widget.idx,
                             textController.text == ''
-                                ? Provider.of<TodoList>(context).getTitle(idx)
+                                ? Provider.of<TodoList>(context)
+                                    .getTitle(widget.idx)
                                 : textController.text,
-                            colorKey.currentState.colorIndex);
+                            colorIndex,
+                            isShareOn);
                       }
                       Navigator.pop(context);
                     },

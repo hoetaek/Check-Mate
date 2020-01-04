@@ -27,18 +27,12 @@ class TodoList with ChangeNotifier {
     });
     itemList.sort((a, b) => a.idx.compareTo(b.idx));
 
-    todoItemBox.watch().listen((event) {
-      if (event.deleted) {
-        //firestore delete
-        print('${event.key} is now deleted');
-      } else {
-        // set key item's value to event.value
-        print('${event.key} is now assigned to ');
-      }
-      notifyListeners();
-    });
     recordList = RecordList(itemList: itemList);
     dateRecordsList = recordList.dateRecordsList;
+    todoItemBox.watch().listen((event) {
+      itemList.sort((a, b) => a.idx.compareTo(b.idx));
+      notifyListeners();
+    });
   }
 
   void reorder(oldIdx, newIdx) {
@@ -72,6 +66,7 @@ class TodoList with ChangeNotifier {
   void toggleDone(int idx) {
     TodoItem item = itemList[idx];
     item.done = !item.done;
+    item.timestamp = DateTime.now();
     item.save();
     notifyListeners();
   }
@@ -82,10 +77,12 @@ class TodoList with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateItem(int idx, String title, int colorIndex) {
+  void updateItem(int idx, String title, int colorIndex, bool isShareOn) {
     TodoItem item = itemList[idx];
     item.title = title;
     item.colorIndex = colorIndex;
+    item.timestamp = DateTime.now();
+    item.share = isShareOn;
     item.save();
     notifyListeners();
   }

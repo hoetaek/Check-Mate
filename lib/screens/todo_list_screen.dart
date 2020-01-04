@@ -136,15 +136,17 @@ class EndDrawer extends StatelessWidget {
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         Expanded(child: Container()),
-                        FlatButton.icon(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => UserInfoScreen(
-                                          userModel: UserModel.fromBox(),
-                                        ))),
-                            icon: Icon(Icons.settings),
-                            label: Text('Edit Profile'))
+                        Provider.of<UserRepository>(context).loggedIn
+                            ? FlatButton.icon(
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UserInfoScreen(
+                                              userModel: UserModel.fromBox(),
+                                            ))),
+                                icon: Icon(Icons.settings),
+                                label: Text('Edit Profile'))
+                            : Container(),
                       ],
                     ),
                   )

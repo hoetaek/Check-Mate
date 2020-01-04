@@ -53,7 +53,7 @@ class UserRepository with ChangeNotifier {
         else
           cacheBox.put(event.key, Cache(deleted: true, updated: false));
       } else {
-//        print('${event.key} is now assigned to ${event.value}');
+        print('${event.key} is now assigned to ${event.value}');
         TodoItem todoItem = event.value;
         if (todoFirestoreProvider != null) {
           print("sending data");
@@ -89,28 +89,47 @@ class UserRepository with ChangeNotifier {
   }
 
   synchronizeTodo() async {
-    QuerySnapshot todoQuerySnapshot =
-        await todoFirestoreProvider.getUserTodoListCollection().getDocuments();
-    List<DocumentSnapshot> todoDocuments = todoQuerySnapshot.documents;
     Box todoItemBox = Hive.box(Boxes.todoItemBox);
-    List<TodoItem> todoItemListFromBox =
-        todoItemBox.values.map((item) => item as TodoItem).toList();
 
-    List<int> boxKeys =
-        todoItemListFromBox.map((item) => item.key as int).toList();
-
-    // get todoItems from Firestore that are not in the box
-    todoDocuments
-        .where((doc) => !boxKeys.contains(int.parse(doc.documentID)))
-        .forEach((doc) {
-      TodoItem todoItem = TodoItem(
-          title: doc['title'],
-          done: doc['done'],
-          colorIndex: doc['colorIndex'],
-          idx: todoItemBox.length);
-      todoItemBox.put(int.parse(doc.documentID), todoItem);
-      TodoList.itemList.add(todoItem);
+    Stream<QuerySnapshot> todoItemStream =
+        todoFirestoreProvider.getUserTodoSnapshot();
+    todoItemStream.listen((QuerySnapshot todoQuerySnapshot) {
+      print('listening to stream');
+      todoQuerySnapshot.documentChanges.forEach((document) {
+        List<int> boxKeys =
+            TodoList.itemList.map((item) => item.key as int).toList();
+        DocumentSnapshot doc = document.document;
+        int docKey = int.parse(doc.documentID);
+        switch (document.type) {
+          case DocumentChangeType.added:
+            if (!boxKeys.contains(docKey)) {
+              TodoItem todoItem = TodoItem.fromDoc(doc, todoItemBox.length);
+              todoItemBox.put(docKey, todoItem);
+              TodoList.itemList.add(todoItem);
+            }
+            break;
+          case DocumentChangeType.modified:
+            if (boxKeys.contains(docKey)) {
+              TodoItem todoItem = todoItemBox.get(docKey);
+              if (todoItem.timestamp.isBefore(
+                  DateTime.fromMillisecondsSinceEpoch(doc['timestamp'],
+                      isUtc: true))) {
+                todoItem.update(doc);
+                todoItem.save();
+              }
+            }
+            break;
+          case DocumentChangeType.removed:
+            if (boxKeys.contains(docKey)) {
+              TodoItem todoItem = todoItemBox.get(docKey);
+              TodoList.itemList.remove(todoItem);
+              todoItem.delete();
+            }
+            break;
+        }
+      });
     });
+//    todoItemStream.cancel();
   }
 
   setNicknameExists() {
@@ -179,6 +198,7 @@ class UserRepository with ChangeNotifier {
   }
 
   Future<void> _onAuthStateChanged(FirebaseUser firebaseUser) async {
+    print("auth is changed. let's see how many times.");
     if (firebaseUser == null) {
       _status = Status.Unauthenticated;
       notifyListeners();
