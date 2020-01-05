@@ -14,8 +14,14 @@ class FriendTodoListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(builder: (context, UserRepository user, _) {
       return StreamBuilder<QuerySnapshot>(
-          stream: user.todoFirestoreProvider
-              .getUserTodoSnapshot(uid: userModel.uid),
+          stream: Firestore.instance
+              .collection('Users')
+              .document(userModel.uid)
+              .collection('TodoList')
+              .where('share', isEqualTo: true)
+              .snapshots(),
+//          user.todoFirestoreProvider
+//              .getUserTodoSnapshot(uid: userModel.uid),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Scaffold(

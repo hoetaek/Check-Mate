@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:check_mate/constants.dart';
 import 'package:check_mate/models/cache.dart';
 import 'package:check_mate/models/todo_item.dart';
@@ -7,6 +9,7 @@ import 'package:check_mate/resources/todo_firestore_provider.dart';
 import 'package:check_mate/widgets/flutter_login/flutter_login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
@@ -55,15 +58,25 @@ class UserRepository with ChangeNotifier {
       } else {
         print('${event.key} is now assigned to ${event.value}');
         TodoItem todoItem = event.value;
-        if (todoFirestoreProvider != null) {
+        if (todoItem.share) {
+          if (todoFirestoreProvider != null) {
+            print("sending data");
+            todoFirestoreProvider.addUserTodoList(
+              uid: _user.uid,
+              key: todoItem.key,
+              userTodoItem: todoItem.toMapForFirestore(),
+            );
+          } else
+            cacheBox.put(event.key, Cache(deleted: false, updated: true));
+        } else {
           print("sending data");
           todoFirestoreProvider.addUserTodoList(
             uid: _user.uid,
             key: todoItem.key,
-            userTodoItem: todoItem.toMapForFirestore(),
+            userTodoItem: {"share": false},
+            merge: true,
           );
-        } else
-          cacheBox.put(event.key, Cache(deleted: false, updated: true));
+        }
       }
     });
   }
@@ -86,6 +99,20 @@ class UserRepository with ChangeNotifier {
           todoFirestoreProvider.deleteUserTodoList(uid: _user.uid, key: key);
       });
     }
+  }
+
+  sendDeviceToken() async {
+    final FirebaseMessaging _fcm = FirebaseMessaging();
+    String token = await _fcm.getToken();
+    todoFirestoreProvider.usersCollection.getCollection
+        .document(uid)
+        .collection('Token')
+        .document(token)
+        .setData({
+      'token': token,
+      'platform': Platform.operatingSystem,
+      'createdAt': DateTime.now()
+    });
   }
 
   synchronizeTodo() async {
@@ -221,6 +248,7 @@ class UserRepository with ChangeNotifier {
         notifyListeners();
       }
 
+      sendDeviceToken();
       synchronizeTodo();
 
       // only change to status authenticated when first app launch.

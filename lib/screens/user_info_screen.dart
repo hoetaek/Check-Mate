@@ -4,18 +4,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:check_mate/constants.dart';
 import 'package:check_mate/models/user_model.dart';
 import 'package:check_mate/models/user_repository.dart';
-import 'package:check_mate/resources/profile_firestrage_provider.dart';
+import 'package:check_mate/resources/profile_firestorage_provider.dart';
 import 'package:check_mate/widgets/simple_button.dart';
 import 'package:check_mate/widgets/simple_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' show basename;
 import 'package:provider/provider.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final UserModel userModel;
-  const UserInfoScreen({Key key, this.userModel}) : super(key: key);
+  final Function onSubmit;
+  const UserInfoScreen({Key key, this.userModel, this.onSubmit})
+      : super(key: key);
   @override
   _UserInfoScreenState createState() => _UserInfoScreenState();
 }
@@ -26,6 +29,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   final TextEditingController controller = TextEditingController();
   File _image;
   Widget buttonPressed;
+  final String defaultPath = 'check_logo.png';
   final String defaultImage =
       "https://firebasestorage.googleapis.com/v0/b/check-mate-745fc.appspot.com/o/check_logo.png?alt=media&token=d3899036-f264-4027-98e9-c0960c092b39";
 
@@ -34,6 +38,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     setState(() {
       _image = image;
     });
+    Navigator.of(context).pop();
   }
 
   void openGallery() async {
@@ -66,6 +71,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       _optionsDialogBox();
                     },
                     child: widget.userModel == null
+                        // on Sign up
+                        // if there is no image display nothing
+                        // if there is image display the image
                         ? CircleAvatar(
                             backgroundImage: _image == null
                                 ? null
@@ -97,43 +105,79 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                               ],
                             ),
                           )
-                        : CachedNetworkImage(
-                            imageUrl: widget.userModel.profileURL,
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            imageBuilder: (context, imageProvider) =>
-                                CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: imageProvider,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        _image == null
-                                            ? Icon(
-                                                Icons.camera,
-                                                color: Colors.white,
-                                                size: 15,
-                                              )
-                                            : Container(),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        _image == null
-                                            ? Text(
-                                                'Profile Picture',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ],
-                                    )),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
+                        :
+                        // on edit profile
+                        // if there is no image display the original image
+                        // if there is image display the image
+                        _image == null
+                            ? CachedNetworkImage(
+                                imageUrl: widget.userModel.profileURL,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                imageBuilder: (context, imageProvider) =>
+                                    CircleAvatar(
+                                        radius: 50,
+                                        backgroundImage: imageProvider,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            _image == null
+                                                ? Icon(
+                                                    Icons.camera,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  )
+                                                : Container(),
+                                            SizedBox(
+                                              height: 15,
+                                            ),
+                                            _image == null
+                                                ? Text(
+                                                    'Profile Picture',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 10,
+                                                    ),
+                                                  )
+                                                : Container(),
+                                          ],
+                                        )),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              )
+                            : CircleAvatar(
+                                backgroundImage: _image == null
+                                    ? null
+                                    : Image.file(_image).image,
+                                radius: 50,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    _image == null
+                                        ? Icon(
+                                            Icons.camera,
+                                            color: Colors.white,
+                                            size: 15,
+                                          )
+                                        : Container(),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    _image == null
+                                        ? Text(
+                                            'Profile Picture',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                              ),
                   ),
                   SizedBox(height: 12),
                   FractionallySizedBox(
@@ -141,8 +185,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     child: SimpleTextField(
                       formKey: _formKey,
                       validator: (String value) {
-                        if (value.isEmpty && widget.userModel == null) {
-                          return "닉네임을 입력하세요.";
+                        if (value.isEmpty) {
+                          if (widget.onSubmit == null) return "닉네임을 입력하세요.";
+                          if (_image == null) return "닉네임을 입력하세요.";
                         } else if (value.contains(" ")) {
                           return "빈칸을 제거해주세요.";
                         } else if (!isUniqueNickname) {
@@ -172,13 +217,22 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             if (!(_formKey.currentState.validate())) return;
 
                             setState(() {
-                              buttonPressed = CircularProgressIndicator();
+                              buttonPressed =
+                                  FittedBox(child: CircularProgressIndicator());
                             });
                             String downloadURL;
-                            if (_image != null)
+                            String profilePath;
+                            if (widget.onSubmit != null) {
+                              profilePath = widget.userModel.profilePath;
+                              downloadURL = widget.userModel.profileURL;
+                            }
+                            if (_image != null) {
+                              profilePath = basename(_image.path);
                               downloadURL =
                                   await ProfileFirestorageProvider.uploadFile(
                                       _image);
+                            }
+
                             FirebaseUser user = userRepo.user;
 
                             UserModel userModel = UserModel(
@@ -186,17 +240,20 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                               nickname: controller.text == ""
                                   ? widget.userModel.nickname
                                   : controller.text,
+                              profilePath: profilePath == null
+                                  ? defaultPath
+                                  : profilePath,
                               profileURL: downloadURL == null
                                   ? defaultImage
                                   : downloadURL,
-                              level: 1,
+                              level: widget.userModel?.level ?? 1,
                             );
                             userRepo.todoFirestoreProvider
                                 .addUsersData(userModel);
                             userModel.saveBox();
                             userRepo.userNickname = controller.text;
                             userRepo.setNicknameExists();
-                            widget.userModel ?? Navigator.pop(context);
+                            if (widget.onSubmit != null) widget.onSubmit();
                           },
                         ),
                   )
@@ -220,18 +277,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content: new SingleChildScrollView(
-              child: new ListBody(
+            content: SingleChildScrollView(
+              child: ListBody(
                 children: <Widget>[
                   GestureDetector(
-                    child: new Text('Take a picture'),
+                    child: Text('Take a picture'),
                     onTap: openCamera,
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                   ),
                   GestureDetector(
-                    child: new Text('Select from gallery'),
+                    child: Text('Select from gallery'),
                     onTap: openGallery,
                   ),
                 ],

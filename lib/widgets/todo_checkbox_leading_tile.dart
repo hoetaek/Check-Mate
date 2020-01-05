@@ -1,5 +1,4 @@
 import 'package:check_mate/constants.dart';
-import 'package:check_mate/screens/edit_todo_item_screen.dart';
 import 'package:flutter/material.dart';
 
 class CheckboxLeadingTile extends StatelessWidget {
@@ -24,13 +23,7 @@ class CheckboxLeadingTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onLongPress: () =>
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return EditTodoItemScreen(idx: idx);
-      })),
-      onTap: () {
-        onChanged(!value);
-      },
+      onLongPress: () => onChanged(!value),
       child: Row(
         children: <Widget>[
           Checkbox(

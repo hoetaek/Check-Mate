@@ -52,10 +52,13 @@ class TodoFirestoreProvider {
       return null;
   }
 
-  addUserTodoList({uid, key, Map<String, dynamic> userTodoItem}) {
+  addUserTodoList(
+      {uid, key, Map<String, dynamic> userTodoItem, bool merge = false}) {
     CollectionReference userTodoListCollection =
         getUserTodoListCollection(uid: uid);
-    userTodoListCollection.document(key.toString()).setData(userTodoItem);
+    userTodoListCollection
+        .document(key.toString())
+        .setData(userTodoItem, merge: merge);
   }
 
   deleteUserTodoList({uid, key}) {
@@ -76,15 +79,6 @@ class TodoFirestoreProvider {
       return usersCollection.innerInit(myUid).collection('TodoList');
     } else {
       return usersCollection.innerInit(uid).collection('TodoList');
-    }
-  }
-
-  ///do i have to put friends list on firestore?
-  CollectionReference getUserFriendsCollection({String uid}) {
-    if (uid == null) {
-      return usersCollection.innerInit(myUid).collection('Friends');
-    } else {
-      return usersCollection.innerInit(uid).collection('Friends');
     }
   }
 }

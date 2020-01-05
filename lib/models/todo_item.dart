@@ -60,7 +60,6 @@ class TodoItem extends HiveObject {
     done = doc["done"];
     level = doc["level"];
     colorIndex = doc["colorIndex"];
-    idx = doc["idx"];
     timestamp =
         DateTime.fromMillisecondsSinceEpoch(doc["timestamp"], isUtc: true);
     records = List<DateTime>.from(doc["records"].map((record) {
@@ -76,7 +75,6 @@ class TodoItem extends HiveObject {
       "done": done,
       "level": level,
       "colorIndex": colorIndex,
-      "idx": idx,
       "timestamp": timestamp.toUtc().millisecondsSinceEpoch,
       "records": records
           .map((record) => record.toUtc().millisecondsSinceEpoch)

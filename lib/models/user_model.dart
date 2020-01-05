@@ -4,13 +4,15 @@ import 'package:hive/hive.dart';
 class UserModel {
   String uid;
   String nickname;
+  String profilePath;
   String profileURL;
   int total;
   int done;
   int left;
   int level;
 
-  UserModel({this.uid, this.nickname, this.profileURL, this.level});
+  UserModel(
+      {this.uid, this.profilePath, this.nickname, this.profileURL, this.level});
 
   UserModel.parseMap(Map<String, dynamic> userData) {
     uid = userData["uid"];
@@ -22,6 +24,7 @@ class UserModel {
     Box userBox = Hive.box(Boxes.userBox);
     uid = userBox.get("uid");
     nickname = userBox.get("nickname") ?? "닉네임";
+    profilePath = userBox.get("profilePath");
     profileURL = userBox.get("profileURL");
     level = userBox.get("level");
     userBox.watch().listen((event) {
@@ -36,6 +39,7 @@ class UserModel {
     return {
       "uid": uid,
       "nickname": nickname,
+      "profilePath": profilePath,
       "profileURL": profileURL,
       "level": level
     };
@@ -62,6 +66,7 @@ class UserModel {
     Box userBox = Hive.box(Boxes.userBox);
     userBox.put('uid', uid);
     userBox.put('nickname', nickname);
+    userBox.put('profilePath', profilePath);
     userBox.put('profileURL', profileURL);
     userBox.put('level', level);
   }

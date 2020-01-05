@@ -87,7 +87,7 @@ class _ReorderableSlidableListViewState
         shrinkWrap: true,
         children: <Widget>[
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: bodyHeight - 84),
+            constraints: BoxConstraints(maxHeight: bodyHeight - 88),
             child: ListView.builder(
               physics: ScrollPhysics(),
               shrinkWrap: true,

@@ -16,6 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     loadData();
+
     super.initState();
   }
 
@@ -28,7 +29,6 @@ class _SplashScreenState extends State<SplashScreen> {
         compactionStrategy: (int total, int deleted) {
       return deleted > 20;
     });
-
     return Timer(Duration(milliseconds: 1300), onDoneLoading);
   }
 

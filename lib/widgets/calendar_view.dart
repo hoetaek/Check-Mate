@@ -122,7 +122,9 @@ class _CalendarViewState extends State<CalendarView> {
 //        box.values.forEach((record) => print(record.date));
 //      },
       pageScrollPhysics: NeverScrollableScrollPhysics(),
-//      selectedDayButtonColor: kColors[4],
+      customGridViewPhysics: NeverScrollableScrollPhysics(),
+      isScrollable: false,
+      selectedDayButtonColor: kColors[4],
       selectedDateTime: _selectedDate,
       leftButtonIcon: Icon(
         Icons.chevron_left,
@@ -132,7 +134,6 @@ class _CalendarViewState extends State<CalendarView> {
         Icons.chevron_right,
         color: kMainColor,
       ),
-      isScrollable: false,
       headerTextStyle: TextStyle(
           color: kMainColor, fontSize: 20, fontWeight: FontWeight.bold),
       weekdayTextStyle: TextStyle(color: Colors.blueGrey),

@@ -21,6 +21,11 @@ void main() async {
   Hive.registerAdapter(TodoItemAdapter(), 0);
   Hive.registerAdapter(RecordAdapter(), 1);
   Hive.registerAdapter(CacheAdapter(), 2);
+//  runApp(MaterialApp(
+////    home: Scaffold(
+////      body: LocalNotificationWidget(),
+////    ),
+////  ));
   runApp(CheckMate());
 }
 

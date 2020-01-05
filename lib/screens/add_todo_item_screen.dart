@@ -77,7 +77,7 @@ class _AddTodoItemScreenState extends State<AddTodoItemScreen> {
                         title: textController.text,
                         done: false,
                         idx: TodoList.itemList.length,
-                        colorIndex: 3,
+                        colorIndex: colorIndex,
                         created: DateTime(now.year, now.month, now.day),
                         timestamp: DateTime.now(),
                         share: isShareOn,
